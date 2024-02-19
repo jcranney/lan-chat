@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Flask_Chat_App</title>
+</head>
+<body>
+
+  <a href="/qr">qr code</a>
+  <h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
+  <div class="message_holder"></div>
+  <form action="" method="POST">
+    <input type="text" class="username" placeholder="User Name"/>
+    <input type="text" class="message" placeholder="Messages"/>
+    <input type="submit"/>
+  </form>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="{{ url_for('static',filename="jquery.min.js") }}"></script>
+  <script src={{ url_for('static',filename="socket.io.js") }}></script>
+  <script type="text/javascript">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    socket.on( 'connect', function() {
+      socket.emit( 'my event', {
+        data: 'User Connected'
+      } )
+      var form = $( 'form' ).on( 'submit', function( e ) {
+        e.preventDefault()
+        let user_name = $( 'input.username' ).val()
+        let user_input = $( 'input.message' ).val()
+        socket.emit( 'my event', {
+          name : user_name,
+          message : user_input
+        } )
+        $( 'input.message' ).val( '' ).focus()
+      } )
+    } )
+    socket.on( 'my response', function( msgs ) {
+      if( msgs.length ) {
+        $( 'h3' ).remove();
+        $( 'div.message_holder' ).text("");
+        for (let msg of msgs){
+            $( 'div.message_holder' ).append('<div><b style="color: #000">'+msg.name+'</b> '+msg.message+'</div>');
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>

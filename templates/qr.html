@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Flask_Chat_App</title>
+</head>
+<body>
+  <div  id="qrcode"><form action="/"><button>back</button></form><br></div>
+  <script src={{ url_for('static',filename="qrcode.min.js") }}></script>
+  <script type="text/javascript">
+    new QRCode(document.getElementById("qrcode"), '{{ server_url }}');
+  </script>
+
+</body>
+</html>
